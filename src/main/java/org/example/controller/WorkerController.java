@@ -8,7 +8,7 @@ import java.util.List;
 
 public class WorkerController {
 
-    private WorkerService service = new WorkerService();
+    private final WorkerService service = new WorkerService();
 
     public List<Worker> getAll(){
         return service.getAll();
@@ -17,4 +17,8 @@ public class WorkerController {
     public Worker save(Worker worker) {
         return service.save(worker);
     }
+
+    public Worker edit(Worker worker) {return service.edit(worker);}
+
+    public void delete(int id){service.delete(id);}
 }

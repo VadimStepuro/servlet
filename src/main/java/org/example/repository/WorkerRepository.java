@@ -3,10 +3,8 @@ package org.example.repository;
 import org.example.model.Worker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
 
 public class WorkerRepository {
 
@@ -22,5 +20,23 @@ public class WorkerRepository {
     public Worker addWorker(Worker worker){
         workers.add(worker);
         return worker;
+    }
+
+    public Worker getById(int id){
+        for(int i = 0; i < workers.size(); i++){
+            if(workers.get(i).getId() == id)
+                return workers.get(i);
+        }
+        throw new NoSuchElementException("No such worker");
+    }
+
+    public void delete(int id){
+        for(int i = 0; i < workers.size(); i++){
+            if(workers.get(i).getId() == id) {
+                workers.remove(i);
+                return;
+            }
+        }
+        throw new NoSuchElementException("No such worker");
     }
 }

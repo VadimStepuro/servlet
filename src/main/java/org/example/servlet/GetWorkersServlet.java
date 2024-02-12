@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns = "/workers")
 public class GetWorkersServlet extends HttpServlet {
@@ -22,7 +21,7 @@ public class GetWorkersServlet extends HttpServlet {
     private final WorkerController controller = new WorkerController();
     private final ObjectMapper mapper = new ObjectMapper();
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         List<Worker> workerList = controller.getAll();
 
         resp.setContentType("application/json");
@@ -40,9 +39,7 @@ public class GetWorkersServlet extends HttpServlet {
 
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException{
-
+    private String getBody(HttpServletRequest req) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
@@ -50,7 +47,13 @@ public class GetWorkersServlet extends HttpServlet {
             sb.append(line);
             sb.append("\n");
         }
-        String json = sb.toString();
+        return sb.toString();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse response) throws IOException{
+
+        String json = getBody(req);
 
 
 
@@ -63,6 +66,42 @@ public class GetWorkersServlet extends HttpServlet {
             json = mapper.writeValueAsString(save);
             PrintWriter writer = response.getWriter();
             writer.println(json);
+            writer.close();
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse response) throws IOException {
+
+        String json = getBody(req);
+
+
+
+        Worker worker = mapper.readValue(json, Worker.class);
+
+        Worker edit = controller.edit(worker);
+
+        response.setContentType("application/json");
+        try{
+            json = mapper.writeValueAsString(edit);
+            PrintWriter writer = response.getWriter();
+            writer.println(json);
+            writer.close();
+        }catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse response) throws IOException {
+        int id =Integer.parseInt(req.getParameter("id"));
+        controller.delete(id);
+        response.setContentType("application/json");
+        try{
+            PrintWriter writer = response.getWriter();
+            writer.println("");
             writer.close();
         }catch (JsonProcessingException e) {
             e.printStackTrace();
