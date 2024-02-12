@@ -26,13 +26,16 @@ public class GetWorkersServlet extends HttpServlet {
 
     private void getAllWorkers(HttpServletResponse resp) throws IOException{
         List<Worker> workerList = controller.getAll();
+
         resp.setContentType("application/json");
 
         try{
             String json = mapper.writeValueAsString(workerList);
+
             PrintWriter writer = resp.getWriter();
             writer.println(json);
             writer.close();
+
         }catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -42,10 +45,12 @@ public class GetWorkersServlet extends HttpServlet {
         StringBuilder sb = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
+
         while ((line = reader.readLine()) != null) {
             sb.append(line);
             sb.append("\n");
         }
+
         return sb.toString();
     }
 
@@ -56,15 +61,18 @@ public class GetWorkersServlet extends HttpServlet {
 
     private void createWorker(HttpServletRequest req, HttpServletResponse response)throws IOException{
         String json = getBody(req);
+
         Worker worker = mapper.readValue(json, Worker.class);
         Worker save = controller.save(worker);
         response.setContentType("application/json");
 
         try{
             json = mapper.writeValueAsString(save);
+
             PrintWriter writer = response.getWriter();
             writer.println(json);
             writer.close();
+
         }catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -77,6 +85,7 @@ public class GetWorkersServlet extends HttpServlet {
 
     private void editWorker(HttpServletRequest req, HttpServletResponse response) throws IOException {
         String json = getBody(req);
+
         Worker worker = mapper.readValue(json, Worker.class);
         Worker edit = controller.edit(worker);
         response.setContentType("application/json");
@@ -86,6 +95,7 @@ public class GetWorkersServlet extends HttpServlet {
             PrintWriter writer = response.getWriter();
             writer.println(json);
             writer.close();
+
         }catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -98,6 +108,7 @@ public class GetWorkersServlet extends HttpServlet {
 
     private void deleteWorker(HttpServletRequest req, HttpServletResponse response) throws IOException {
         int id =Integer.parseInt(req.getParameter("id"));
+
         controller.delete(id);
         response.setContentType("application/json");
 
@@ -105,6 +116,7 @@ public class GetWorkersServlet extends HttpServlet {
             PrintWriter writer = response.getWriter();
             writer.println("");
             writer.close();
+
         }catch (JsonProcessingException e) {
             e.printStackTrace();
         }
