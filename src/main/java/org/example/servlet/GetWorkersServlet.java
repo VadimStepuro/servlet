@@ -10,11 +10,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@WebServlet("/workers/")
+@WebServlet(urlPatterns = "/workers")
 public class GetWorkersServlet extends HttpServlet {
 
     private final WorkerController controller = new WorkerController();
@@ -40,18 +42,25 @@ public class GetWorkersServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException{
-        int id = Integer.parseInt(req.getParameter("id"));
-        String name = req.getParameter("name");
-        String surname = req.getParameter("surname");
-        String password = req.getParameter("password");
 
-        Worker worker = new Worker(id, name, surname, password);
+        StringBuilder sb = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
+            sb.append("\n");
+        }
+        String json = sb.toString();
+
+
+
+        Worker worker = mapper.readValue(json, Worker.class);
 
         Worker save = controller.save(worker);
 
         response.setContentType("application/json");
         try{
-            String json = mapper.writeValueAsString(save);
+            json = mapper.writeValueAsString(save);
             PrintWriter writer = response.getWriter();
             writer.println(json);
             writer.close();

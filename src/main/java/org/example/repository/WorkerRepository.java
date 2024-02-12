@@ -6,14 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Stream;
 
 public class WorkerRepository {
 
-    private List<Worker> workers = Arrays.asList(
-            new Worker(1, "Vadim", "Stepuro", "1111"),
-            new Worker(2, "Konstantin", "Belov", "2222"),
-            new Worker(3, "Ilia", "Primak", "3333"),
-            new Worker(4, "Anton", "Borodich", "4444"));
+    private List<Worker> workers = new ArrayList<>(){{
+            add(new Worker(1, "Vadim", "Stepuro", "1111"));
+            add(new Worker(2, "Konstantin", "Belov", "2222"));
+            add(new Worker(3, "Ilia", "Primak", "3333"));
+            add(new Worker(4, "Anton", "Borodich", "4444"));}};
     public List<Worker> getWorkers(){
         return workers;
     }
